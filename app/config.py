@@ -17,7 +17,7 @@ class Settings:
     hi_gif_path: Path
     log_level: str = 'INFO'
     collect_cooldown_seconds: int = 0
-    daily_reward_cooldown_seconds: int = 86400
+    daily_reward_cooldown_seconds: int = 0
     starter_xp: int = 0
     buy_random_card_cost: int = 500
     reset_cooldown_cost: int = 250
@@ -43,7 +43,7 @@ def get_settings() -> Settings:
         hi_gif_path=Path(os.getenv('HI_GIF_PATH', BASE_DIR / 'assets' / 'hi.gif')),
         log_level=os.getenv('LOG_LEVEL', 'INFO').upper(),
         collect_cooldown_seconds=_env_int('COLLECT_COOLDOWN_SECONDS', 0),
-        daily_reward_cooldown_seconds=_env_int('DAILY_REWARD_COOLDOWN_SECONDS', 86400),
+        daily_reward_cooldown_seconds=_env_int('DAILY_REWARD_COOLDOWN_SECONDS', 0),
         starter_xp=_env_int('STARTER_XP', 0),
         buy_random_card_cost=_env_int('BUY_RANDOM_CARD_COST', 500),
         reset_cooldown_cost=_env_int('RESET_COOLDOWN_COST', 250),

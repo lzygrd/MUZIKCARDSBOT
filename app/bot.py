@@ -9,6 +9,7 @@ import telebot
 from app.config import get_settings
 from app.context import AppContext
 from app.db import Database
+from app.handlers.admin import register_admin_handlers
 from app.handlers.collection import register_collection_handlers
 from app.handlers.collect import register_collect_handlers
 from app.handlers.common import register_common_handlers
@@ -42,6 +43,7 @@ def build_app() -> AppContext:
     register_trade_handlers(ctx)
     register_social_handlers(ctx)
     register_roulette_handlers(ctx)
+    register_admin_handlers(ctx)
     return ctx
 
 

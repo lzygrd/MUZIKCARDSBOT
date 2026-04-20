@@ -3,21 +3,14 @@ from __future__ import annotations
 import time
 
 from app.context import AppContext
-from app.handlers.common import antispam_message, ensure_player, safe_send_card_media
+from app.handlers.common import ensure_player, safe_send_card_media
 from app.services.game_logic import random_card, xp_for_rarity
-from app.utils.formatters import format_cooldown
 
 
 def _collect_card(ctx: AppContext, chat_id: int, user) -> None:
     ensure_player(ctx, user)
     user_id = user.id
-    user_row = ctx.db.get_user(user_id)
     now = time.time()
-    delta = now - float(user_row['last_collect'])
-    if delta < ctx.settings.collect_cooldown_seconds:
-        remaining = int(ctx.settings.collect_cooldown_seconds - delta)
-        ctx.bot.send_message(chat_id, f'⏳ Подожди {format_cooldown(remaining)}!')
-        return
 
     card = random_card()
     xp = xp_for_rarity(card['rarity'])
@@ -46,6 +39,4 @@ def register_collect_handlers(ctx: AppContext) -> None:
 
     @bot.message_handler(func=lambda m: m.text == '🎴 Получить карту')
     def collect_card(message):
-        if not antispam_message(ctx, message, 'collect', limit=2, window_seconds=3):
-            return
         _collect_card(ctx, message.chat.id, message.from_user)

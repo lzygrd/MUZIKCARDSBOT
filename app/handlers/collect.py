@@ -5,12 +5,20 @@ import time
 from app.context import AppContext
 from app.handlers.common import ensure_player, safe_send_card_media
 from app.services.game_logic import random_card, xp_for_rarity
+from app.utils.formatters import format_cooldown
 
 
 def _collect_card(ctx: AppContext, chat_id: int, user) -> None:
     ensure_player(ctx, user)
     user_id = user.id
     now = time.time()
+
+    user_row = ctx.db.get_user(user_id)
+    delta = now - float(user_row['last_collect'])
+    if delta < ctx.settings.collect_cooldown_seconds:
+        remaining = int(ctx.settings.collect_cooldown_seconds - delta)
+        ctx.bot.send_message(chat_id, f'⏳ Подожди {format_cooldown(remaining)}!')
+        return
 
     card = random_card()
     xp = xp_for_rarity(card['rarity'])
